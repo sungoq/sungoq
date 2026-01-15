@@ -2,19 +2,12 @@ package main
 
 import (
 	"github.com/sungoq/sungoq/api"
-	"github.com/sungoq/sungoq/service"
+	_ "github.com/sungoq/sungoq/service"
 )
 
 func main() {
 
-	svc, err := service.New()
-	if err != nil {
-		panic(err)
-	}
-
-	api, err := api.New(
-		api.WithService(svc),
-	)
+	api, err := api.New()
 	if err != nil {
 		panic(err)
 	}

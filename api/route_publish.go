@@ -2,11 +2,12 @@ package api
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/sungoq/sungoq/service"
 )
 
 type PublishMessageReq struct {
-	Topic   string      `json:"topic"`
-	Message interface{} `json:"message"`
+	Topic   string `json:"topic"`
+	Message any    `json:"message"`
 }
 
 func (api *API) Publish(c *fiber.Ctx) error {
@@ -16,7 +17,7 @@ func (api *API) Publish(c *fiber.Ctx) error {
 		return err
 	}
 
-	message, err := api.service.Topic.Publish(input.Topic, input.Message)
+	message, err := service.Topic.Publish(input.Topic, input.Message)
 	if err != nil {
 		return err
 	}

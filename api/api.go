@@ -3,9 +3,7 @@ package api
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
-	"github.com/sungoq/sungoq/constants"
 	"github.com/sungoq/sungoq/model"
-	"github.com/sungoq/sungoq/service"
 )
 
 type publishing struct {
@@ -16,8 +14,7 @@ type publishing struct {
 type API struct {
 	app *fiber.App
 
-	service *service.Service
-	addr    string
+	addr string
 
 	chPublishing chan publishing
 }
@@ -34,10 +31,6 @@ func New(options ...OptionFunc) (*API, error) {
 
 	if api.addr == "" {
 		api.addr = ":8080"
-	}
-
-	if api.service == nil {
-		return nil, constants.ErrServiceIsEmpty
 	}
 
 	return api, nil

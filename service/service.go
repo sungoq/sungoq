@@ -2,17 +2,12 @@ package service
 
 import "github.com/sungoq/sungoq/service/topic"
 
-type Service struct {
-	Topic *topic.TopicService
-}
+var Topic *topic.TopicService
 
-func New() (*Service, error) {
+func init() {
 	topicService, err := topic.New()
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
-
-	return &Service{
-		Topic: topicService,
-	}, nil
+	Topic = topicService
 }

@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/gofiber/websocket/v2"
+	"github.com/sungoq/sungoq/service"
 )
 
 func (api *API) Consume(c *websocket.Conn) {
@@ -11,7 +12,7 @@ func (api *API) Consume(c *websocket.Conn) {
 		return
 	}
 
-	messages, err := api.service.Topic.GetAllMessages(topic)
+	messages, err := service.Topic.GetAllMessages(topic)
 	if err != nil {
 		_ = c.Close()
 		return
@@ -24,14 +25,14 @@ func (api *API) Consume(c *websocket.Conn) {
 				continue
 			}
 
-			_ = api.service.Topic.DeleteMessage(topic, m.ID)
+			_ = service.Topic.DeleteMessage(topic, m.ID)
 		}
 	}()
 
 	for pub := range api.chPublishing {
 		if topic == pub.Topic {
 			_ = c.WriteMessage(websocket.TextMessage, pub.Message.ToJSON())
-			_ = api.service.Topic.DeleteMessage(topic, pub.Message.ID)
+			_ = service.Topic.DeleteMessage(topic, pub.Message.ID)
 		}
 	}
 

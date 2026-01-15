@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/sungoq/sungoq/constants"
+	"github.com/sungoq/sungoq/service"
 )
 
 type CreateTopicReq struct {
@@ -14,7 +15,7 @@ func (api *API) CreateTopics(c *fiber.Ctx) error {
 	if err := c.BodyParser(&input); err != nil {
 		return err
 	}
-	err := api.service.Topic.Create(input.Name)
+	err := service.Topic.Create(input.Name)
 	if err != nil {
 		return err
 	}
@@ -25,8 +26,7 @@ func (api *API) CreateTopics(c *fiber.Ctx) error {
 }
 
 func (api *API) GetAllTopics(c *fiber.Ctx) error {
-
-	topics, err := api.service.Topic.GetAll()
+	topics, err := service.Topic.GetAll()
 	if err != nil {
 		return err
 	}
@@ -42,7 +42,7 @@ func (api *API) DeleteTopics(c *fiber.Ctx) error {
 		return constants.ErrNameIsEmpty
 	}
 
-	err := api.service.Topic.Delete(name)
+	err := service.Topic.Delete(name)
 	if err != nil {
 		return err
 	}

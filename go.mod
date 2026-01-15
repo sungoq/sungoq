@@ -1,6 +1,6 @@
 module github.com/sungoq/sungoq
 
-go 1.19
+go 1.25
 
 require (
 	github.com/dgraph-io/badger/v3 v3.2103.2

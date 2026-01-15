@@ -8,15 +8,15 @@ import (
 )
 
 type Message struct {
-	ID        string      `json:"id"`
-	Body      interface{} `json:"body"`
-	Timestamp uint        `json:"timestamp"`
-	Attempts  uint        `json:"attempts"`
+	ID        string `json:"id"`
+	Body      any    `json:"body"`
+	Timestamp uint   `json:"timestamp"`
+	Attempts  uint   `json:"attempts"`
 }
 
 type Messages []Message
 
-func NewMessage(body interface{}) Message {
+func NewMessage(body any) Message {
 	return Message{
 		ID:        uuid.NewString(),
 		Body:      body,
