@@ -35,8 +35,6 @@ github.com/gofiber/websocket/v2 v2.0.25 h1:lmA+TiC/gYkvTUSJcmVHvg0w5Uq4oTFtAqhHF
 github.com/gofiber/websocket/v2 v2.0.25/go.mod h1:mo0hgtdmPvFpMKIPPIWAAIbPe37JU4E2mLT1BjMsi54=
 github.com/gogo/protobuf v1.3.2 h1:Ov1cvc58UF3b5XjBnZv7+opcTcQFZebYjWzi34vdm4Q=
 github.com/gogo/protobuf v1.3.2/go.mod h1:P1XiOD3dCwIKUDQYPy72D8LYyHL2YPYrpS2s69NZV8Q=
-github.com/golang-must/must v0.0.0-20211028065754-d81547c0927f h1:6a46vQZC3g7tsr48uJ+OObc1fJZ1Xj5DPfkJRNU0HxE=
-github.com/golang-must/must v0.0.0-20211028065754-d81547c0927f/go.mod h1:Ea+Pj9+4Y581x8+7f65xWh2VcXjA1UnvPsoxAaA1iz0=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b h1:VKtxabqXZkF25pY9ekfRL6a582T4P37/31XEstQ5p58=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=
 github.com/golang/groupcache v0.0.0-20190702054246-869f871628b6 h1:ZgQEtGgCBiWRM39fZuwSd1LwSqqSW0hOdXCYYDX0R3I=

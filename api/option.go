@@ -1,6 +1,6 @@
 package api
 
-import "github.com/hadihammurabi/sungoq/service"
+import "github.com/sungoq/sungoq/service"
 
 type OptionFunc func(*API) *API
 

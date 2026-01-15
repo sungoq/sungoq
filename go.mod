@@ -1,11 +1,12 @@
-module github.com/hadihammurabi/sungoq
+module github.com/sungoq/sungoq
 
 go 1.19
 
 require (
 	github.com/dgraph-io/badger/v3 v3.2103.2
 	github.com/gofiber/fiber/v2 v2.37.1
-	github.com/golang-must/must v0.0.0-20211028065754-d81547c0927f
+	github.com/gofiber/websocket/v2 v2.0.25
+	github.com/google/uuid v1.3.0
 )
 
 require (
@@ -15,14 +16,12 @@ require (
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/fasthttp/websocket v1.5.0 // indirect
-	github.com/gofiber/websocket/v2 v2.0.25 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/golang/groupcache v0.0.0-20190702054246-869f871628b6 // indirect
 	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/google/flatbuffers v1.12.1 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/klauspost/compress v1.15.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/savsgio/gotils v0.0.0-20211223103454-d0aaa54c5899 // indirect

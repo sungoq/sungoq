@@ -1,6 +1,6 @@
 package service
 
-import "github.com/hadihammurabi/sungoq/service/topic"
+import "github.com/sungoq/sungoq/service/topic"
 
 type Service struct {
 	Topic *topic.TopicService

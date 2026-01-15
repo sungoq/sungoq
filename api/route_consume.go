@@ -7,13 +7,13 @@ import (
 func (api *API) Consume(c *websocket.Conn) {
 	topic := c.Query("topic", "")
 	if topic == "" {
-		c.Close()
+		_ = c.Close()
 		return
 	}
 
 	messages, err := api.service.Topic.GetAllMessages(topic)
 	if err != nil {
-		c.Close()
+		_ = c.Close()
 		return
 	}
 
@@ -24,23 +24,15 @@ func (api *API) Consume(c *websocket.Conn) {
 				continue
 			}
 
-			api.service.Topic.DeleteMessage(topic, m.ID)
+			_ = api.service.Topic.DeleteMessage(topic, m.ID)
 		}
 	}()
 
-	go func() {
-		for {
-			select {
-			case pub := <-api.chPublishing:
-				if topic == pub.Topic {
-					c.WriteMessage(websocket.TextMessage, pub.Message.ToJSON())
-					api.service.Topic.DeleteMessage(topic, pub.Message.ID)
-				}
-			}
+	for pub := range api.chPublishing {
+		if topic == pub.Topic {
+			_ = c.WriteMessage(websocket.TextMessage, pub.Message.ToJSON())
+			_ = api.service.Topic.DeleteMessage(topic, pub.Message.ID)
 		}
-	}()
-
-	for {
 	}
 
 }

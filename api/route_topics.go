@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/hadihammurabi/sungoq/constants"
+	"github.com/sungoq/sungoq/constants"
 )
 
 type CreateTopicReq struct {

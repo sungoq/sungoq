@@ -3,9 +3,9 @@ package api
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
-	"github.com/hadihammurabi/sungoq/constants"
-	"github.com/hadihammurabi/sungoq/model"
-	"github.com/hadihammurabi/sungoq/service"
+	"github.com/sungoq/sungoq/constants"
+	"github.com/sungoq/sungoq/model"
+	"github.com/sungoq/sungoq/service"
 )
 
 type publishing struct {
@@ -60,7 +60,7 @@ func (api *API) Route() {
 	api.app.Get("/consume", websocket.New(api.Consume))
 }
 
-func (api *API) Start() {
+func (api *API) Start() error {
 	api.Route()
-	api.app.Listen(api.addr)
+	return api.app.Listen(api.addr)
 }

@@ -1,24 +1,27 @@
 package main
 
 import (
-	sungoqAPI "github.com/hadihammurabi/sungoq/api"
-	sungoqService "github.com/hadihammurabi/sungoq/service"
+	"github.com/sungoq/sungoq/api"
+	"github.com/sungoq/sungoq/service"
 )
 
 func main() {
 
-	svc, err := sungoqService.New()
+	svc, err := service.New()
 	if err != nil {
 		panic(err)
 	}
 
-	api, err := sungoqAPI.New(
-		sungoqAPI.WithService(svc),
+	api, err := api.New(
+		api.WithService(svc),
 	)
 	if err != nil {
 		panic(err)
 	}
 
-	api.Start()
+	err = api.Start()
+	if err != nil {
+		panic(err)
+	}
 
 }

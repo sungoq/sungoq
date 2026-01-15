@@ -8,7 +8,7 @@ import (
 	"sort"
 
 	"github.com/dgraph-io/badger/v3"
-	"github.com/hadihammurabi/sungoq/model"
+	"github.com/sungoq/sungoq/model"
 )
 
 type TopicService struct {
@@ -43,7 +43,9 @@ func (service *TopicService) GetAll() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer serviceStorage.Close()
+	defer func() {
+		_ = serviceStorage.Close()
+	}()
 
 	err = serviceStorage.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
@@ -69,7 +71,9 @@ func (service *TopicService) Create(name string) error {
 	if err != nil {
 		return err
 	}
-	defer serviceStorage.Close()
+	defer func() {
+		_ = serviceStorage.Close()
+	}()
 
 	err = serviceStorage.Update(func(txn *badger.Txn) error {
 
@@ -104,7 +108,9 @@ func (service *TopicService) Create(name string) error {
 		return err
 	}
 
-	defer storage.Close()
+	defer func() {
+		_ = storage.Close()
+	}()
 
 	return nil
 }
@@ -114,7 +120,9 @@ func (service *TopicService) Delete(name string) error {
 	if err != nil {
 		return err
 	}
-	defer serviceStorage.Close()
+	defer func() {
+		_ = serviceStorage.Close()
+	}()
 
 	err = os.RemoveAll(fmt.Sprintf("%s/%s", service.storageLocationPrefix, name))
 	if err != nil {
@@ -147,7 +155,9 @@ func (service TopicService) Publish(topic string, message interface{}) (model.Me
 		return model.Message{}, err
 	}
 
-	defer storage.Close()
+	defer func() {
+		_ = storage.Close()
+	}()
 
 	newMessage := model.NewMessage(message)
 
@@ -177,7 +187,9 @@ func (service TopicService) GetAllMessages(topic string) ([]model.Message, error
 		return nil, err
 	}
 
-	defer storage.Close()
+	defer func() {
+		_ = storage.Close()
+	}()
 
 	messagesRaw := make([][]byte, 0)
 
@@ -228,7 +240,9 @@ func (service TopicService) DeleteMessage(topic string, id string) error {
 		return err
 	}
 
-	defer storage.Close()
+	defer func() {
+		_ = storage.Close()
+	}()
 
 	err = storage.Update(func(txn *badger.Txn) error {
 		err := txn.Delete([]byte(id))
