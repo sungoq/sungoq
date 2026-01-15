@@ -1,7 +1,11 @@
 package api
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"net/http"
+
+	"github.com/gowok/gowok/web/request"
+	"github.com/gowok/gowok/web/response"
+	"github.com/ngamux/ngamux"
 	"github.com/sungoq/sungoq/constants"
 	"github.com/sungoq/sungoq/service"
 )
@@ -10,44 +14,53 @@ type CreateTopicReq struct {
 	Name string `json:"name"`
 }
 
-func (api *API) CreateTopics(c *fiber.Ctx) error {
+func PostTopics(w http.ResponseWriter, r *http.Request) {
+	res := response.New(w)
+
 	input := CreateTopicReq{}
-	if err := c.BodyParser(&input); err != nil {
-		return err
+	if err := request.New(r).JSON(&input); err != nil {
+		res.BadRequest(err)
+		return
 	}
-	err := service.Topic.Create(input.Name)
+
+	err := service.TopicCreate(input.Name)
 	if err != nil {
-		return err
+		res.BadRequest(err)
+		return
 	}
-	return c.JSON(fiber.Map{
+
+	response.New(w).JSON(ngamux.Map{
 		"message": "created",
 		"topic":   input.Name,
 	})
 }
 
-func (api *API) GetAllTopics(c *fiber.Ctx) error {
-	topics, err := service.Topic.GetAll()
+func GetTopics(w http.ResponseWriter, r *http.Request) {
+	topics, err := service.TopicGetAll()
 	if err != nil {
-		return err
+		response.New(w).BadRequest(err)
+		return
 	}
 
-	return c.JSON(fiber.Map{
+	response.New(w).JSON(ngamux.Map{
 		"topics": topics,
 	})
 }
 
-func (api *API) DeleteTopics(c *fiber.Ctx) error {
-	name := c.Query("name", "")
+func DeleteTopics(w http.ResponseWriter, r *http.Request) {
+	name := request.New(r).Query("name")
 	if name == "" {
-		return constants.ErrNameIsEmpty
+		response.New(w).BadRequest(constants.ErrNameIsEmpty)
+		return
 	}
 
-	err := service.Topic.Delete(name)
+	err := service.TopicDelete(name)
 	if err != nil {
-		return err
+		response.New(w).BadRequest(err)
+		return
 	}
 
-	return c.JSON(fiber.Map{
+	response.New(w).JSON(ngamux.Map{
 		"message": "deleted",
 		"topic":   name,
 	})

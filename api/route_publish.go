@@ -1,33 +1,35 @@
 package api
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"net/http"
+
+	"github.com/gowok/gowok/web/request"
+	"github.com/gowok/gowok/web/response"
+	"github.com/ngamux/ngamux"
+	"github.com/sungoq/sungoq/model"
 	"github.com/sungoq/sungoq/service"
 )
 
-type PublishMessageReq struct {
-	Topic   string `json:"topic"`
-	Message any    `json:"message"`
-}
-
-func (api *API) Publish(c *fiber.Ctx) error {
-
-	input := PublishMessageReq{}
-	if err := c.BodyParser(&input); err != nil {
-		return err
+func PostPublish(w http.ResponseWriter, r *http.Request) {
+	res := response.New(w)
+	input := model.Publishing{}
+	if err := request.New(r).JSON(&input); err != nil {
+		res.BadRequest(err)
+		return
 	}
 
-	message, err := service.Topic.Publish(input.Topic, input.Message)
+	message, err := service.TopicPublish(input.Topic, input.Message)
 	if err != nil {
-		return err
+		res.BadRequest(err)
+		return
 	}
 
-	api.chPublishing <- publishing{
+	chPublishing <- model.Publishing{
 		Topic:   input.Topic,
 		Message: message,
 	}
 
-	return c.JSON(fiber.Map{
+	res.JSON(ngamux.Map{
 		"message": "sent",
 		"topic":   input.Topic,
 		"id":      message.ID,

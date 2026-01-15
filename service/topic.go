@@ -1,4 +1,4 @@
-package topic
+package service
 
 import (
 	"encoding/json"
@@ -7,47 +7,32 @@ import (
 	"os"
 	"sort"
 
-	"github.com/dgraph-io/badger/v3"
+	"github.com/dgraph-io/badger/v4"
 	"github.com/sungoq/sungoq/model"
 )
 
-type TopicService struct {
-	storageLocationPrefix string
-}
+const storageLocationPrefix = "/tmp/sungoq"
 
-func New() (*TopicService, error) {
-	service := &TopicService{
-		storageLocationPrefix: "/tmp/sungoq",
-	}
+var store *badger.DB
 
-	return service, nil
-}
-
-func (service *TopicService) storage() (*badger.DB, error) {
+func topicConfigure() {
 	storageOpt := badger.DefaultOptions(
-		fmt.Sprintf("%s/%s", service.storageLocationPrefix, "sungoq"),
+		fmt.Sprintf("%s/%s", storageLocationPrefix, "sungoq"),
 	)
-	store, err := badger.Open(
+	_store, err := badger.Open(
 		storageOpt,
 	)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
-	return store, nil
+	store = _store
 }
 
-func (service *TopicService) GetAll() ([]string, error) {
+func TopicGetAll() ([]string, error) {
 	topics := make([]string, 0)
-	serviceStorage, err := service.storage()
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		_ = serviceStorage.Close()
-	}()
 
-	err = serviceStorage.View(func(txn *badger.Txn) error {
+	err := store.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
 		opts.PrefetchSize = 10
 		it := txn.NewIterator(opts)
@@ -66,17 +51,8 @@ func (service *TopicService) GetAll() ([]string, error) {
 	return topics, nil
 }
 
-func (service *TopicService) Create(name string) error {
-	serviceStorage, err := service.storage()
-	if err != nil {
-		return err
-	}
-	defer func() {
-		_ = serviceStorage.Close()
-	}()
-
-	err = serviceStorage.Update(func(txn *badger.Txn) error {
-
+func TopicCreate(name string) error {
+	err := store.Update(func(txn *badger.Txn) error {
 		_, err := txn.Get([]byte(name))
 
 		if err != nil {
@@ -100,7 +76,7 @@ func (service *TopicService) Create(name string) error {
 
 	storage, err := badger.Open(
 		badger.DefaultOptions(
-			fmt.Sprintf("%s/%s", service.storageLocationPrefix, name),
+			fmt.Sprintf("%s/%s", storageLocationPrefix, name),
 		),
 	)
 
@@ -115,21 +91,13 @@ func (service *TopicService) Create(name string) error {
 	return nil
 }
 
-func (service *TopicService) Delete(name string) error {
-	serviceStorage, err := service.storage()
-	if err != nil {
-		return err
-	}
-	defer func() {
-		_ = serviceStorage.Close()
-	}()
-
-	err = os.RemoveAll(fmt.Sprintf("%s/%s", service.storageLocationPrefix, name))
+func TopicDelete(name string) error {
+	err := os.RemoveAll(fmt.Sprintf("%s/%s", storageLocationPrefix, name))
 	if err != nil {
 		return err
 	}
 
-	err = serviceStorage.Update(func(txn *badger.Txn) error {
+	err = store.Update(func(txn *badger.Txn) error {
 		err := txn.Delete([]byte(name))
 		if err != nil {
 			return err
@@ -145,10 +113,10 @@ func (service *TopicService) Delete(name string) error {
 	return nil
 }
 
-func (service TopicService) Publish(topic string, message interface{}) (model.Message, error) {
+func TopicPublish(topic string, message any) (model.Message, error) {
 	storage, err := badger.Open(
 		badger.DefaultOptions(
-			fmt.Sprintf("%s/%s", service.storageLocationPrefix, topic),
+			fmt.Sprintf("%s/%s", storageLocationPrefix, topic),
 		),
 	)
 	if err != nil {
@@ -177,10 +145,10 @@ func (service TopicService) Publish(topic string, message interface{}) (model.Me
 	return newMessage, nil
 }
 
-func (service TopicService) GetAllMessages(topic string) ([]model.Message, error) {
+func TopicGetAllMessages(topic string) ([]model.Message, error) {
 	storage, err := badger.Open(
 		badger.DefaultOptions(
-			fmt.Sprintf("%s/%s", service.storageLocationPrefix, topic),
+			fmt.Sprintf("%s/%s", storageLocationPrefix, topic),
 		),
 	)
 	if err != nil {
@@ -230,10 +198,10 @@ func (service TopicService) GetAllMessages(topic string) ([]model.Message, error
 	return messages, nil
 }
 
-func (service TopicService) DeleteMessage(topic string, id string) error {
+func TopicDeleteMessage(topic string, id string) error {
 	storage, err := badger.Open(
 		badger.DefaultOptions(
-			fmt.Sprintf("%s/%s", service.storageLocationPrefix, topic),
+			fmt.Sprintf("%s/%s", storageLocationPrefix, topic),
 		),
 	)
 	if err != nil {
